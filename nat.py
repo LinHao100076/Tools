@@ -1,17 +1,26 @@
 import socket
 import threading
 import sys
+import argparse
 
 # ================= 配置区域 =================
+
+parser = argparse.ArgumentParser(description="NAT端口转发技术")
+
+parser.add_argument("--localhost", default="0.0.0.0", help="监听地址")
+parser.add_argument("--localport", default="8080", help="监听端口")
+parser.add_argument("--remotehost", default="169.254.4.238", help="服务器地址")
+parser.add_argument("--remoteport", default="22", help="服务器端口")
+
 # 监听的地址 (0.0.0.0 表示允许任何机器连接)
-LOCAL_HOST = '0.0.0.0'
+LOCAL_HOST = parser.parse_args().localhost
 # 监听的端口 (你希望外部连接的端口)
-LOCAL_PORT = 8080
+LOCAL_PORT = parser.parse_args().localport
 
 # 目标服务器 (服务器 B) 的内网 IP
-REMOTE_HOST = '10.42.0.224'  # <--- 请修改这里为服务器 B 的真实内网 IP
+REMOTE_HOST = parser.parse_args().remotehost
 # 目标服务器的端口 (SSH 默认为 22)
-REMOTE_PORT = 22
+REMOTE_PORT = parser.parse_args().remoteport
 # ===========================================
 
 def handle_traffic(source_socket, destination_socket):
@@ -80,6 +89,7 @@ def main():
             break
         except Exception as e:
             print(f"[!] 发生错误: {e}")
+
 
 if __name__ == '__main__':
     main()
